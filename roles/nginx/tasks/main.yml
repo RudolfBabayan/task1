@@ -1,0 +1,52 @@
+---
+# tasks file for roles/nginx
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Ensure Nginx service is started and enabled
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Copy Nginx configuration template
+  template:
+    src: templates/nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+
+- name: Ensure directories exist
+  file:
+    path: "/home/ubuntu/{{ item }}"
+    state: directory
+  with_items:
+    - nginx
+    - app
+
+- name: Copy PHP files
+  copy:
+    src: files/app/index.php
+    dest: /home/ubuntu/app/index.php
+
+- name: Copy nginx files
+  template:
+    src: templates/nginx.conf.j2
+    dest: /home/ubuntu/nginx/nginx.conf
+  notify: Restart Nginx
+
+- name: Copy nginx files
+  copy:
+    src: files/Dockerfile
+    dest: /home/ubuntu/nginx/Dockerfile
+
+- name: Copy dockerfile files
+  copy:
+    src: files/php/Dockerfile
+    dest: /home/ubuntu/Dockerfile
+
+- name: Change directory to where docker-compose.yml is located
+  shell: cd /home/ubuntu
+
+- name: Execute docker-compose up -d
+  command: docker compose up -d

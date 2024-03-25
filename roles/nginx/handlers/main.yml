@@ -1,0 +1,4 @@
+---
+# handlers file for roles/nginx
+- name: Restart Nginx
+  command: docker restart nginx
