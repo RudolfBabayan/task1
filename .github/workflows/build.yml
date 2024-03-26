@@ -44,13 +44,39 @@ jobs:
          username: ${{ secrets.DOCKERHUB_USERNAME }}
          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-     - name: Push the Docker Hub
-       run: |
-         docker tag php-fpm rudolfbabayan/php-fpm:${{ env.Image_tag }}
-         docker tag nginx rudolfbabayan/nginx:${{ env.Image_tag }}
-         docker tag mysql:8.0 rudolfbabayan/mysql:${{ env.Image_tag }}
-         docker tag phpmyadmin/phpmyadmin rudolfbabayan/phpmyadmin:${{ env.Image_tag }}
-         docker push rudolfbabayan/php-fpm:${{ env.Image_tag }}
-         docker push rudolfbabayan/nginx:${{ env.Image_tag }}
-         docker push rudolfbabayan/mysql:${{ env.Image_tag }}
-         docker push rudolfbabayan/phpmyadmin:${{ env.Image_tag }}
+     - name: Install ssh-client
+       run: sudo apt-get install openssh-client -y
+
+     - name: SSH into the host and run commands
+       uses: appleboy/ssh-action@master
+       with:
+         host: ${{ secrets.HOST }}
+         username: ${{ secrets.SSH_USERNAME }}
+         private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+         port: ${{ secrets.SSH_PORT }} # optional, default is 22
+         script: |
+           docker tag php-fpm rudolfbabayan/php-fpm:${{ env.Image_tag }}
+           docker tag nginx rudolfbabayan/nginx:${{ env.Image_tag }}
+           docker tag mysql:8.0 rudolfbabayan/mysql:${{ env.Image_tag }}
+           docker tag phpmyadmin/phpmyadmin rudolfbabayan/phpmyadmin:${{ env.Image_tag }}
+
+           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+
+           docker push rudolfbabayan/php-fpm:${{ env.Image_tag }}
+           docker push rudolfbabayan/nginx:${{ env.Image_tag }}
+           docker push rudolfbabayan/mysql:${{ env.Image_tag }}
+           docker push rudolfbabayan/phpmyadmin:${{ env.Image_tag }}
+
+#     - name: Push the Docker Hub
+ #      run: |
+  #       docker tag php-fpm rudolfbabayan/php-fpm:${{ env.Image_tag }}
+   #      docker tag nginx rudolfbabayan/nginx:${{ env.Image_tag }}
+    #     docker tag mysql:8.0 rudolfbabayan/mysql:${{ env.Image_tag }}
+     #    docker tag phpmyadmin/phpmyadmin rudolfbabayan/phpmyadmin:${{ env.Image_tag }}
+
+      #   docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }
+
+  #       docker push rudolfbabayan/php-fpm:${{ env.Image_tag }}
+   #      docker push rudolfbabayan/nginx:${{ env.Image_tag }}
+    #     docker push rudolfbabayan/mysql:${{ env.Image_tag }}
+     #    docker push rudolfbabayan/phpmyadmin:${{ env.Image_tag }}
