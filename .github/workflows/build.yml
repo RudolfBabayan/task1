@@ -46,7 +46,7 @@ jobs:
      needs: [build-push]
 
      steps:
-     - uses: actions/checkout@v3
+     - uses: actions/checkout@v4
 
      - uses: webfactory/ssh-agent@v0.9.0
        with:
