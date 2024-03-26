@@ -55,7 +55,7 @@ jobs:
          docker tag mysql:8.0 rudolfbabayan/mysql:${{ env.Image_tag }}
          docker tag phpmyadmin/phpmyadmin rudolfbabayan/phpmyadmin:${{ env.Image_tag }}
 
-         docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }
+         docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
 
          docker push rudolfbabayan/php-fpm:${{ env.Image_tag }}
          docker push rudolfbabayan/nginx:${{ env.Image_tag }}
