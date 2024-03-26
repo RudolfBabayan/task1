@@ -31,33 +31,3 @@ jobs:
        run: |
          ansible-playbook  playbook.yaml
 
-   build-push:
-     needs: [ansible-playbook]
-     timeout-minutes: 10
-     runs-on: ubuntu-latest
-
-     steps:
-
-     - name: Login the Docker Hub
-       uses: docker/login-action@v3
-       with:
-         username: ${{ secrets.DOCKERHUB_USERNAME }}
-         password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-
-     - name: Push the Docker Hub
-       run: |
-         cd task
-         docker compose -f docker-compose.yml up --abort-on-container-exit
-
-         docker tag php-fpm rudolfbabayan/php-fpm:${{ env.Image_tag }}
-         docker tag nginx rudolfbabayan/nginx:${{ env.Image_tag }}
-         docker tag mysql:8.0 rudolfbabayan/mysql:${{ env.Image_tag }}
-         docker tag phpmyadmin/phpmyadmin rudolfbabayan/phpmyadmin:${{ env.Image_tag }}
-
-         docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-
-         docker push rudolfbabayan/php-fpm:${{ env.Image_tag }}
-         docker push rudolfbabayan/nginx:${{ env.Image_tag }}
-         docker push rudolfbabayan/mysql:${{ env.Image_tag }}
-         docker push rudolfbabayan/phpmyadmin:${{ env.Image_tag }}
