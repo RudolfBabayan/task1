@@ -11,7 +11,7 @@ on:
 
 jobs:
    build-push:
-
+     timeout-minutes: 10
      runs-on: ubuntu-latest
 
      steps:
@@ -40,10 +40,14 @@ jobs:
 
      - name: Push the Docker Hub
        run: |
-         docker tag rudol rudolfbabayan/mysql:8.1
+         docker tag php-fpm rudolfbabayan/php-fpm:${{ env.Image_tag }}
+         docker tag nginx rudolfbabayan/nginx:${{ env.Image_tag }}
+         docker tag mysql:8.0 rudolfbabayan/mysql:${{ env.Image_tag }}
+         docker tag phpmyadmin/phpmyadmin rudolfbabayan/phpmyadmin:${{ env.Image_tag }}
          docker push rudolfbabayan/php-fpm:${{ env.Image_tag }}
          docker push rudolfbabayan/nginx:${{ env.Image_tag }}
-         docker push rudolfbabayan/mysql:8.0
+         docker push rudolfbabayan/mysql:${{ env.Image_tag }}
+         docker push rudolfbabayan/phpmyadmin:${{ env.Image_tag }}
 
 
    ansible-playbook:
