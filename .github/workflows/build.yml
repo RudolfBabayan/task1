@@ -20,7 +20,7 @@ jobs:
 
      - name: Build the Docker image
        run: |
-         docker compose up -d --tag rudolfbabayan/nginx-mysql-php:${{ env.Image_tag }}
+         docker compose up -d  rudolfbabayan/nginx-mysql-php:${{ env.Image_tag }}
 
      - name: Login the Docker Hub
        uses: docker/login-action@v3
