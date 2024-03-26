@@ -1,0 +1,51 @@
+name: task1
+env:
+  Image_tag: ${{ github.run_number }}
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+   build-push:
+
+     runs-on: ubuntu-latest
+
+     steps:
+
+     - uses: actions/checkout@v3
+
+     - name: Build the Docker image
+       run: |
+         docker compose up -d --tag rudolfbabayan/nginx-mysql-php:${{ env.Image_tag }}
+
+     - name: Login the Docker Hub
+       uses: docker/login-action@v3
+       with:
+         username: ${{ secrets.DOCKERHUB_USERNAME }}
+         password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+     - name: Push the Docker Hub
+       run: docker push rudolfbabayan/lesson-23:${{ env.Image_tag }}
+
+   ansible-playbook:
+
+     runs-on: ubuntu-latest
+
+     steps:
+     - uses: actions/checkout@v3
+
+     - uses: webfactory/ssh-agent@v0.9.0
+       with:
+         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+     - name: add keyscan
+       run: |
+         ssh-keyscan 51.20.12.121 >> ~/.ssh/known_hosts
+
+     - name: Ansible playbook run
+       run: |
+         ansible-playbook  playbook.yaml
