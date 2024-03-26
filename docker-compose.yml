@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+    image: php-fpm
     volumes:
       - ./app:/var/www/html
     depends_on:
@@ -12,6 +13,7 @@ services:
 
   nginx:
     container_name: nginx
+    image: nginx
     build:
       context: .
       dockerfile: ./nginx/Dockerfile
